@@ -4,6 +4,13 @@ import (
 	"errors"
 )
 
+var (
+	// ErrShapeCapacityIsFull is returned when shapes capacity is full
+	ErrShapeCapacityIsFull = errors.New("shapes capacity is full")
+	// ErrShapeByIndexDoesNotExist is returned when shape by index doesn't exist
+	ErrShapeByIndexDoesNotExist = errors.New("shape by index doesn't exist")
+)
+
 // box contains list of shapes and able to perform operations on them
 type box struct {
 	shapes         []Shape
@@ -21,7 +28,7 @@ func NewBox(shapesCapacity int) *box {
 // returns the error in case it goes out of the shapesCapacity range.
 func (b *box) AddShape(shape Shape) error {
 	if len(b.shapes) == b.shapesCapacity {
-		return errors.New("shapes capacity is full")
+		return ErrShapeCapacityIsFull
 	}
 	b.shapes = append(b.shapes, shape)
 	return nil
@@ -31,7 +38,7 @@ func (b *box) AddShape(shape Shape) error {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) GetByIndex(i int) (Shape, error) {
 	if i < 0 || i >= len(b.shapes) {
-		return nil, errors.New("shape by index doesn't exist")
+		return nil, ErrShapeByIndexDoesNotExist
 	}
 	return b.shapes[i], nil
 }
@@ -40,7 +47,7 @@ func (b *box) GetByIndex(i int) (Shape, error) {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ExtractByIndex(i int) (Shape, error) {
 	if i < 0 || i >= len(b.shapes) {
-		return nil, errors.New("shape by index doesn't exist")
+		return nil, ErrShapeByIndexDoesNotExist
 	}
 	shape := b.shapes[i]
 	b.shapes = append(b.shapes[:i], b.shapes[i+1:]...)
@@ -51,7 +58,7 @@ func (b *box) ExtractByIndex(i int) (Shape, error) {
 // whether shape by index doesn't exist or index went out of the range, then it returns an error
 func (b *box) ReplaceByIndex(i int, shape Shape) (Shape, error) {
 	if i < 0 || i >= len(b.shapes) {
-		return nil, errors.New("shape by index doesn't exist")
+		return nil, ErrShapeByIndexDoesNotExist
 	}
 	oldShape := b.shapes[i]
 	b.shapes[i] = shape
